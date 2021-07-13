@@ -12,6 +12,7 @@ public class Game {
 
     private final Hand dealerHand = new Hand();
     private final Hand playerHand = new Hand();
+    private boolean playerDone;
 
     public static void main(String[] args) {
         displayWelcomeScreen();
@@ -19,7 +20,7 @@ public class Game {
         resetScreen();
     }
 
-    private static void resetScreen() {
+    static void resetScreen() {
         System.out.println(ansi().reset());
     }
 
@@ -29,7 +30,7 @@ public class Game {
         game.play();
     }
 
-    private static void displayWelcomeScreen() {
+    static void displayWelcomeScreen() {
         System.out.println(ansi()
                                    .bgBright(Ansi.Color.WHITE)
                                    .eraseScreen()
@@ -64,7 +65,7 @@ public class Game {
         dealerHand.drawFrom(deck);
     }
 
-    private void determineOutcome() {
+    public void determineOutcome() {
         if (playerHand.isBusted()) {
             System.out.println("You Busted, so you lose.  💸");
         } else if (dealerHand.isBusted()) {
@@ -78,8 +79,8 @@ public class Game {
         }
     }
 
-    private void dealerTurn() {
-        // Dealer makes its choice automatically based on a simple heuristic (<=16 must hit, =>17 must stand)
+    public void dealerTurn() {
+        // Dealer makes its choice automatically based on a simple heuristic (<=16, hit, 17>stand)
         if (!playerHand.isBusted()) {
             while (dealerHand.dealerMustDrawCard()) {
                 dealerHand.drawFrom(deck);
@@ -107,19 +108,31 @@ public class Game {
         }
     }
 
-    private String inputFromPlayer() {
+    public String inputFromPlayer() {
         System.out.println("[H]it or [S]tand?");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
 
-    private void displayGameState() {
+    public void displayGameState() {
         System.out.print(ansi().eraseScreen().cursor(1, 1));
         System.out.println("Dealer has: ");
         System.out.println(ConsoleHand.displayFirstCard(dealerHand)); // first card is Face Up
 
         // second card is the hole card, which is hidden
         displayBackOfCard();
+
+        System.out.println();
+        System.out.println("Player has: ");
+        System.out.println(ConsoleHand.cardsAsString(playerHand));
+        System.out.println(" (" + playerHand.value() + ")");
+    }
+
+    public void displayFinalGameState() {
+        System.out.print(ansi().eraseScreen().cursor(1, 1));
+        System.out.println("Dealer has: ");
+        System.out.println(ConsoleHand.cardsAsString(dealerHand));
+        System.out.println(" (" + dealerHand.value() + ")");
 
         System.out.println();
         System.out.println("Player has: ");
@@ -141,16 +154,16 @@ public class Game {
                         .a("└─────────┘"));
     }
 
-    private void displayFinalGameState() {
-        System.out.print(ansi().eraseScreen().cursor(1, 1));
-        System.out.println("Dealer has: ");
-        System.out.println(ConsoleHand.cardsAsString(dealerHand));
-        System.out.println(" (" + dealerHand.value() + ")");
-
-        System.out.println();
-        System.out.println("Player has: ");
-        System.out.println(ConsoleHand.cardsAsString(playerHand));
-        System.out.println(" (" + playerHand.value() + ")");
+    public void playerHits() {
+        playerHand.drawFrom(deck);
+        playerDone = playerHand.isBusted();
     }
 
+    public void playerStands() {
+        playerDone = true;
+    }
+
+    public boolean isPlayerDone() {
+        return playerDone;
+    }
 }
