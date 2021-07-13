@@ -16,11 +16,27 @@ public class ConsoleGame {
         this.game = game;
     }
 
-    public static void resetScreen() {
+    public void start() {
+        displayWelcomeScreen();
+
+        game.initialDeal();
+
+        playerPlays();
+
+        game.dealerTurn();
+
+        displayFinalGameState();
+
+        System.out.println(game.determineOutcome());
+
+        resetScreen();
+    }
+
+    private void resetScreen() {
         System.out.println(ansi().reset());
     }
 
-    public static void displayWelcomeScreen() {
+    private void displayWelcomeScreen() {
         System.out.println(ansi()
                                    .bgBright(Ansi.Color.WHITE)
                                    .eraseScreen()
@@ -30,7 +46,7 @@ public class ConsoleGame {
                                    .fgBlack().a(" BlackJack"));
     }
 
-    public static void displayGameState(Game game) {
+    private void displayGameState() {
         System.out.print(ansi().eraseScreen().cursor(1, 1));
         System.out.println("Dealer has: ");
         System.out.println(ConsoleHand.displayFirstCard(game.dealerHand())); // first card is Face Up
@@ -44,7 +60,19 @@ public class ConsoleGame {
         System.out.println(" (" + game.playerHand().value() + ")");
     }
 
-    public static void displayBackOfCard() {
+    private void displayFinalGameState() {
+        System.out.print(ansi().eraseScreen().cursor(1, 1));
+        System.out.println("Dealer has: ");
+        System.out.println(ConsoleHand.cardsAsString(game.dealerHand()));
+        System.out.println(" (" + game.dealerHand().value() + ")");
+
+        System.out.println();
+        System.out.println("Player has: ");
+        System.out.println(ConsoleHand.cardsAsString(game.playerHand()));
+        System.out.println(" (" + game.playerHand().value() + ")");
+    }
+
+    private static void displayBackOfCard() {
         System.out.print(
                 ansi()
                         .cursorUp(7)
@@ -58,49 +86,21 @@ public class ConsoleGame {
                         .a("└─────────┘"));
     }
 
-    public static void displayFinalGameState(Game game) {
-        System.out.print(ansi().eraseScreen().cursor(1, 1));
-        System.out.println("Dealer has: ");
-        System.out.println(ConsoleHand.cardsAsString(game.dealerHand()));
-        System.out.println(" (" + game.dealerHand().value() + ")");
-
-        System.out.println();
-        System.out.println("Player has: ");
-        System.out.println(ConsoleHand.cardsAsString(game.playerHand()));
-        System.out.println(" (" + game.playerHand().value() + ")");
-    }
-
-    public static String inputFromPlayer() {
+    private String inputFromPlayer() {
         System.out.println("[H]it or [S]tand?");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
 
-    public void start() {
-        displayWelcomeScreen();
-
-        game.initialDeal();
-
-        playerPlays();
-
-        game.dealerTurn();
-
-        displayFinalGameState(game);
-
-        System.out.println(game.determineOutcome());
-
-        resetScreen();
-    }
-
-    public void playerPlays() {
+    private void playerPlays() {
         while (!game.isPlayerDone()) {
-            displayGameState(game);
+            displayGameState();
             String command = inputFromPlayer();
             handle(command);
         }
     }
 
-    public void handle(String command) {
+    private void handle(String command) {
         if (command.toLowerCase().startsWith("h")) {
             game.playerHits();
         } else if (command.toLowerCase().startsWith("s")) {
