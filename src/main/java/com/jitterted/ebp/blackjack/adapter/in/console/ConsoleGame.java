@@ -1,9 +1,12 @@
-package com.jitterted.ebp.blackjack;
+package com.jitterted.ebp.blackjack.adapter.in.console;
+
+import com.jitterted.ebp.blackjack.domain.Game;
 
 public class ConsoleGame {
 
     private final Game game;
 
+    // Adapter DEPENDS on Game -- Normally do NOT depend on Entity classes
     public ConsoleGame(Game game) {
         this.game = game;
     }
