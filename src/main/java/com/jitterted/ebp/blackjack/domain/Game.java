@@ -12,6 +12,10 @@ public class Game {
         deck = new Deck();
     }
 
+    public Game(Deck deck) {
+        this.deck = deck;
+    }
+
     public void initialDeal() {
         dealRoundOfCards();
         dealRoundOfCards();
