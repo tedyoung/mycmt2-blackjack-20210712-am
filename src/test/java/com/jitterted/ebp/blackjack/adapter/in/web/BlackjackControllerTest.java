@@ -51,4 +51,20 @@ class BlackjackControllerTest {
         assertThat(gameView.getPlayerCards())
                 .containsExactly("10♦", "K♦");
     }
+
+    @Test
+    public void hitCommandResultsInPlayerWithThreeCards() throws Exception {
+        Game game = new Game();
+        BlackjackController blackjackController = new BlackjackController(game);
+        blackjackController.startGame();
+
+        String redirectPage = blackjackController.hitCommand();
+
+        assertThat(redirectPage)
+                .isEqualTo("redirect:/game");
+
+        assertThat(game.playerHand().cards())
+                .hasSize(3);
+    }
+
 }

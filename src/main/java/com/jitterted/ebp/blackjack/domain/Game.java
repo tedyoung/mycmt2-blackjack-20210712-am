@@ -62,6 +62,8 @@ public class Game {
     }
 
     public void playerHits() {
+        // only allow this if playerDone == false
+        // otherwise throw exception
         playerHand.drawFrom(deck);
         playerDone = playerHand.isBusted();
     }
