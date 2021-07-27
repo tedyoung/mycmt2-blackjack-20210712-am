@@ -76,6 +76,9 @@ public class Game {
         // otherwise throw exception
         playerHand.drawFrom(deck);
         playerDone = playerHand.isBusted();
+        if (playerDone) {
+            gameMonitor.roundCompleted(this);
+        }
     }
 
     public void playerStands() {
