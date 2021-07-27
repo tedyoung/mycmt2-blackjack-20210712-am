@@ -75,16 +75,19 @@ public class Game {
         // only allow this if playerDone == false
         // otherwise throw exception
         playerHand.drawFrom(deck);
-        playerDone = playerHand.isBusted();
+        updatePlayerDoneStateTo(playerHand.isBusted());
+    }
+
+    private void updatePlayerDoneStateTo(boolean isPlayerDone) {
+        playerDone = isPlayerDone;
         if (playerDone) {
             gameMonitor.roundCompleted(this);
         }
     }
 
     public void playerStands() {
-        playerDone = true;
         dealerTurn();
-        gameMonitor.roundCompleted(this);
+        updatePlayerDoneStateTo(true);
     }
 
     public boolean isPlayerDone() {
